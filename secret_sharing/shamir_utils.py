@@ -1,17 +1,17 @@
 import base64
 import codecs
 import math
-from random import SystemRandom
-
+import secrets
 
 class utils:
     prime = 0
 
     def __init__(self, prime=115792089237316195423570985008687907853269984665640564039457584007913129639747):
         self.prime = prime
+        self.system_rnd = secrets.SystemRandom()
 
     def random(self):
-        return SystemRandom().randrange(self.prime)
+        return self.system_rnd.randrange(self.prime)
 
     def split_ints(self, secret):
         result = []

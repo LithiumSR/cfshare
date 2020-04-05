@@ -1,6 +1,7 @@
 import binascii
 import enum
 import os
+import secrets
 import sys
 import tempfile
 
@@ -25,8 +26,8 @@ class CryptoSplit:
                    max_chunk=2048):
         schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
         if key is None:
-            key = os.urandom(32)
-        iv = os.urandom(schema_lens['iv'])
+            key = secrets.token_bytes(32)
+        iv = secrets.token_bytes(schema_lens['iv'])
         cipher = CryptoSplit._get_cipher_from_mode(mode, key, iv)
         encryptor = cipher.encryptor()
         h = hmac.HMAC(key, hashes.SHA256(), default_backend())
