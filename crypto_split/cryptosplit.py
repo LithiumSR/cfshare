@@ -55,7 +55,7 @@ class CryptoSplit:
                         fo.write(b)
                         b = f.read(max_chunk)
             while written_files < total_shares:
-                with open(fileout + "{}_{}".format(written_files + 1, total_shares) + '.shares', 'wb') as fo_share:
+                with open(fileout + "{}_{}".format(written_files + 1, total_shares) + '.share', 'wb') as fo_share:
                     fo_share.write(int.to_bytes(mode.value, schema_lens['mode'], 'little'))
                     fo_share.write(int.to_bytes(shares[written_files][0], schema_lens['share_index'], 'little'))
                     fo_share.write(int.to_bytes(len(shares[written_files][1]), schema_lens['share_len'], 'little'))
