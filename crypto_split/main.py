@@ -18,8 +18,8 @@ def main():
         parser.print_help()
         sys.exit(1)
     if mode == 'split':
-        fi = abspath(args.fi)
-        fo = abspath(args.fo)
+        fi = abspath(args.i)
+        fo = abspath(args.o)
         m = int(args.m)
         t = int(args.t)
         if m > t:
@@ -37,28 +37,29 @@ def main():
             sys.exit(1)
         CryptoSplit.split_file(fi, fo, m, t, mode=mode, sharesonly=args.sharesonly)
     elif mode == 'bind':
-        fi = [abspath(item) for item in args.fi]
-        fs = [abspath(item) for item in args.fs]
-        fo = abspath(args.fo)
+        fi = [abspath(item) for item in args.i]
+        fs = [abspath(item) for item in args.s]
+        fo = abspath(args.o)
         CryptoSplit.reconstruct_file(fi, fo, fshares=fs)
 
 
 def getparser(mode):
     parser = argparse.ArgumentParser(prog="cryptosplit " + mode)
     if mode == 'split':
-        parser.add_argument('-fi', help='File name/path of the original file')
-        parser.add_argument('-fo', help='File name of the output files')
-        parser.add_argument('-t', help='Number of fragments')
+        parser.add_argument('-i', help='Original file relative path')
+        parser.add_argument('-o', help='Relative path of the output files')
+        parser.add_argument('-t', help='Total number of fragments')
         parser.add_argument('-m', help='Minimum number of fragments required for reconstruction')
-        parser.add_argument('-s', '--sharesonly', action='store_true',
-                            help='Make output files only contain a fragment of the key required for decryption')
+        parser.add_argument('-so', '--sharesonly', action='store_true',
+                            help='Make output files only contain the share required for decryption')
         parser.add_argument('-c', '--cipher', help="Chosen cipher[AES|ChaCha20|Camellia] (default: AES)",
                             nargs='*')
     else:
-        parser.add_argument('-fi', nargs='+', help='Encrypted files name')
-        parser.add_argument('-fs', nargs='+',
-                            help='Share files name (required only if encrypted with option -sharesonly)', default=[])
-        parser.add_argument('-fo', help='File name of the output files')
+        parser.add_argument('-i', nargs='+', help='Encrypted files relative paths')
+        parser.add_argument('-o', help='Desired file name/path of the output')
+        parser.add_argument('-s', nargs='+',
+                            help='Share files relative paths (required only if encrypted with option --sharesonly)', default=[])
+
 
     return parser
 
