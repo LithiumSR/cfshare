@@ -1,11 +1,11 @@
 import binascii
 
-from secret_sharing.shamir_utils import utils
+from secret_sharing.shamir_utils import ShamirUtils
 
 
 class Shamir:
     prime = 115792089237316195423570985008687907853269984665640564039457584007913129639747
-    util = utils()
+    util = ShamirUtils()
 
     def create(self, minimum, shares, raw):
         if shares < minimum:

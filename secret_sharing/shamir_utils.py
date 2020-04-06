@@ -3,7 +3,7 @@ import codecs
 import math
 import secrets
 
-class utils:
+class ShamirUtils:
     prime = 0
 
     def __init__(self, prime=115792089237316195423570985008687907853269984665640564039457584007913129639747):
