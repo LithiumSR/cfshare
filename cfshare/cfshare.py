@@ -19,22 +19,22 @@ class CipherMode(enum.Enum):
     Camellia = 3
 
 
-class CryptoSplit:
+class CFShare:
 
     @staticmethod
     def split_file(filein, fileout, min_shares, total_shares, key=None, mode=CipherMode.AES, sharesonly=False,
                    max_chunk=2048):
-        schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
+        schema_lens = CFShare._get_len_elements_from_mode(mode)
         if key is None:
             key = secrets.token_bytes(32)
         iv = secrets.token_bytes(schema_lens['iv'])
-        cipher = CryptoSplit._get_cipher_from_mode(mode, key, iv)
+        cipher = CFShare._get_cipher_from_mode(mode, key, iv)
         encryptor = cipher.encryptor()
         h = hmac.HMAC(key, hashes.SHA256(), default_backend())
 
         shares = Shamir().create(min_shares, total_shares, key)
         shares = [(shares.index(item), item.encode('utf-8')) for item in shares]
-        tmp = tempfile.NamedTemporaryFile(delete=False, prefix='cryptosplit_').name
+        tmp = tempfile.NamedTemporaryFile(delete=False, prefix='cfshare_').name
         with open(filein, "rb") as f:
             with open(tmp, 'wb') as fo:
                 b = f.read(max_chunk)
@@ -107,7 +107,7 @@ class CryptoSplit:
             for share in fshares:
                 with open(share, 'rb') as fi:
                     mode = int.from_bytes(fi.read(8), 'little')
-                    schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
+                    schema_lens = CFShare._get_len_elements_from_mode(mode)
                     index = int.from_bytes(fi.read(schema_lens['share_index']), 'little')
                     len_key = int.from_bytes(fi.read(schema_lens['share_len']), 'little')
                     p_key = fi.read(len_key).decode("utf-8")
@@ -120,7 +120,7 @@ class CryptoSplit:
                 sys.exit(1)
             with open(filein[0], 'rb') as fi:
                 iv, tag = [fi.read(x) for x in [schema_lens['iv'], schema_lens['tag']]]
-                cipher = CryptoSplit._get_cipher_from_mode(mode, key, iv)
+                cipher = CFShare._get_cipher_from_mode(mode, key, iv)
                 h = hmac.HMAC(key, hashes.SHA256(), default_backend())
                 decryptor = cipher.decryptor()
                 with open(fileout, 'wb') as fo:
@@ -138,17 +138,17 @@ class CryptoSplit:
                     os.remove(fileout)
                     sys.exit(1)
         elif len(filein) > 1 and len(fshares) == 0:
-            mode, iv, tag, incomplete, ordered_frags, shares, len_share = CryptoSplit._get_info_from_frags(filein)
-            schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
+            mode, iv, tag, incomplete, ordered_frags, shares, len_share = CFShare._get_info_from_frags(filein)
+            schema_lens = CFShare._get_len_elements_from_mode(mode)
             try:
                 key = Shamir().combine(shares)
             except binascii.Error:
                 print("The shares were incorrect")
                 sys.exit(1)
-            cipher = CryptoSplit._get_cipher_from_mode(mode, key, iv)
+            cipher = CFShare._get_cipher_from_mode(mode, key, iv)
             decryptor = cipher.decryptor()
             h = hmac.HMAC(key, hashes.SHA256(), backend=default_backend())
-            source = CryptoSplit._get_complete_source(ordered_frags, incomplete, max_chunk, len_share, mode)
+            source = CFShare._get_complete_source(ordered_frags, incomplete, max_chunk, len_share, mode)
             with open(source, 'rb') as fi:
                 with open(fileout, "wb") as fo:
                     if not incomplete:
@@ -186,7 +186,7 @@ class CryptoSplit:
             with open(frag, 'rb') as f:
                 tmp_incomplete = bool.from_bytes(f.read(1), 'little')
                 mode = int.from_bytes(f.read(8), 'little')
-                schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
+                schema_lens = CFShare._get_len_elements_from_mode(mode)
                 index = int.from_bytes(f.read(schema_lens['share_index']), 'little')
                 len_share = int.from_bytes(f.read(schema_lens['share_len']), 'little')
                 p_key = f.read(len_share).decode("utf-8")
@@ -217,9 +217,9 @@ class CryptoSplit:
     @staticmethod
     def _get_complete_source(ordered_frags, incomplete, max_chunk, len_share, mode):
         source = ordered_frags[0]
-        schema_lens = CryptoSplit._get_len_elements_from_mode(mode)
+        schema_lens = CFShare._get_len_elements_from_mode(mode)
         if incomplete:
-            source = tempfile.NamedTemporaryFile(delete=False, prefix='cryptosplit_').name
+            source = tempfile.NamedTemporaryFile(delete=False, prefix='cfshare_').name
             with open(source, "wb") as fo:
                 for frag in ordered_frags:
                     with open(frag, 'rb') as fi:

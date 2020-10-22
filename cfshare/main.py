@@ -3,7 +3,7 @@ import argparse
 import sys
 from os.path import abspath
 
-from crypto_split.cryptosplit import CryptoSplit, CipherMode
+from cfshare.cfshare import CFShare, CipherMode
 
 
 def main():
@@ -35,16 +35,16 @@ def main():
         elif len(args.cipher) > 1:
             print('You can choose only one cipher')
             sys.exit(1)
-        CryptoSplit.split_file(fi, fo, m, t, mode=mode, sharesonly=args.sharesonly)
+        CFShare.split_file(fi, fo, m, t, mode=mode, sharesonly=args.sharesonly)
     elif mode == 'bind':
         fi = [abspath(item) for item in args.i]
         fs = [abspath(item) for item in args.s]
         fo = abspath(args.o)
-        CryptoSplit.reconstruct_file(fi, fo, fshares=fs)
+        CFShare.reconstruct_file(fi, fo, fshares=fs)
 
 
 def getparser(mode):
-    parser = argparse.ArgumentParser(prog="cryptosplit " + mode)
+    parser = argparse.ArgumentParser(prog="cfshare " + mode)
     if mode == 'split':
         parser.add_argument('-i', help='Original file relative path')
         parser.add_argument('-o', help='Relative path of the output files')
@@ -76,7 +76,7 @@ def get_cipher_mode(name):
 
 def usage():
     print("Usage:")
-    print("  cryptosplit [split|bind]")
+    print("  cfshare [split|bind]")
     print("")
     print("Options:")
     print("  split                      Encrypt a file")
