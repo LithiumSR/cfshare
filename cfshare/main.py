@@ -23,7 +23,7 @@ def main():
         m = int(args.m)
         t = int(args.t)
         if m > t:
-            print("Minimum number of fragments can't be greater than the total")
+            print("The minimum number of shares can't be greater than the total")
             sys.exit(1)
         elif m == 1:
             print('There is no point in using m=1. Please use m>2')
@@ -48,8 +48,8 @@ def getparser(mode):
     if mode == 'split':
         parser.add_argument('-i', help='Original file relative path')
         parser.add_argument('-o', help='Relative path of the output files')
-        parser.add_argument('-t', help='Total number of fragments')
-        parser.add_argument('-m', help='Minimum number of fragments required for reconstruction')
+        parser.add_argument('-t', help='Total number of shares')
+        parser.add_argument('-m', help='Minimum number of shares required for reconstruction')
         parser.add_argument('-so', '--sharesonly', action='store_true',
                             help='Make output files only contain the share required for decryption')
         parser.add_argument('-c', '--cipher', help="Chosen cipher[AES|ChaCha20|Camellia] (default: AES)",
@@ -58,7 +58,7 @@ def getparser(mode):
         parser.add_argument('-i', nargs='+', help='Encrypted files relative paths')
         parser.add_argument('-o', help='Desired file name/path of the output')
         parser.add_argument('-s', nargs='+',
-                            help='Share files relative paths (required only if encrypted with option --sharesonly)', default=[])
+                            help='Share files relative paths (required only if the file was encrypted with option --sharesonly)', default=[])
 
 
     return parser
