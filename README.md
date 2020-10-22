@@ -7,7 +7,7 @@ The random cipher secret key used for encryption is given as input to a Shamir S
 This encrypted file is copied into _T_ shares paired with one unique Shamir secret and a hash (computed using HMAC and SHA256), which provides authenticity and integrity of the original content of the file, into multiple shares.\
 Based on the user's preferences the encrypted content can be copied into one specific file so that it is not contained in every share.
 
-In order to reconstruct the original file at least _M<T_ shares are required (_M_and _T_ are chosen by the user in the split phase).\
+In order to reconstruct the original file at least _M<T_ shares are required (_M_ and _T_ are chosen by the user in the split phase).\
 Once the user has the required number of shares, the original file is reconstructed by obtaining the original encryption key from the Shamir secrets in the shares, which is later used to decrypt the encrypted content of the original file.
 The resulting file is later verified for its authenticity and integrity using the tag produced by HMAC.
 ## Split
