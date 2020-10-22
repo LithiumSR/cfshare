@@ -18,8 +18,8 @@ You can use "cfshare split <arguments>" to split a file into multiple encrypted 
 | `-o O`  | String | Relative path of the output files          |
 | `-t T` | Int  | Total number of shares                            |
 | `-m M`  | Int | Minimum number of shares required for reconstruction |
-| `-so --sharesonly`  | - | Output encrypted file and shares as distinctive files |
 | `-c`  | String | Select Cipher (valid options: AES|ChaCha20|Camellia, default:AES) |
+| `-so --sharesonly`  | - | Output encrypted file and shares as distinctive files (default: off) |
 ## Bind
 You can use "cfshare bind <arguments>" to bind multiple encrypted shares and reconstruct the original file.
 | argument | type    | description                                      |
