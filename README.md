@@ -4,7 +4,7 @@ Split and reconstruct your file into/from encrypted shares using the Shamir Secr
 ## How does it work
 In the provided implementation the input file is encrypted using a cipher selected by the user.\
 The random cipher secret key used for encryption is given as input to a Shamir Secret sharing algorithm in order to produce different secrets.\
-This encrypted file is copied into _T_ shares paired with one unique Shamir secret and a hash (computed using HMAC and SHA256), which provides authenticity and integrity of the original content of the file, into multiple shares.\
+This encrypted file is copied into _T_ shares paired with one unique Shamir secret and a hash (computed using HMAC and SHA256), which provides the integrity of the original content of the file, into multiple shares.\
 Based on the user's preferences the encrypted content can be copied into one specific file so that it is not contained in every share.
 
 In order to reconstruct the original file at least _M<T_ shares are required (_M_ and _T_ are chosen by the user in the split phase).\
